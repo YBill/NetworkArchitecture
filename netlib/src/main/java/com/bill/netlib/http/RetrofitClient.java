@@ -1,7 +1,6 @@
 package com.bill.netlib.http;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bill.netlib.config.HttpConfig;
 
@@ -24,12 +23,9 @@ public class RetrofitClient {
     }
 
     private RetrofitClient() {
-        mRetrofitBuilder = new Retrofit.Builder();
-        mOkHttpBuilder = new OkHttpClient.Builder();
+
     }
 
-    private OkHttpClient.Builder mOkHttpBuilder;
-    private Retrofit.Builder mRetrofitBuilder;
     private HttpConfig config;
 
     public RetrofitClient setConfig(HttpConfig config) {
@@ -78,33 +74,30 @@ public class RetrofitClient {
             this.config = null;
         }
 
+        Retrofit.Builder mRetrofitBuilder = new Retrofit.Builder();
+
         mRetrofitBuilder.baseUrl(baseUrl);
         for (Converter.Factory converterFactory : converterFactories) {
             mRetrofitBuilder.addConverterFactory(converterFactory);
         }
-        for (Converter.Factory converter : mRetrofitBuilder.converterFactories()) {
-            Log.d("Bill", "converter:" + converter);
-        }
         for (CallAdapter.Factory callAdapter : callAdapterFactories) {
             mRetrofitBuilder.addCallAdapterFactory(callAdapter);
         }
+
+        OkHttpClient.Builder mOkHttpBuilder = new OkHttpClient.Builder();
         mOkHttpBuilder.readTimeout(readTimeout, TimeUnit.SECONDS);
         mOkHttpBuilder.writeTimeout(writeTimeout, TimeUnit.SECONDS);
         mOkHttpBuilder.connectTimeout(connectTimeout, TimeUnit.SECONDS);
         if (interceptors != null) {
-            for (int i = 0; i < interceptors.length; i++) {
-                if (!mOkHttpBuilder.interceptors().contains(interceptors[i])) {
-                    mOkHttpBuilder.addInterceptor(interceptors[i]);
-                }
+            for (Interceptor interceptor : interceptors) {
+                mOkHttpBuilder.addInterceptor(interceptor);
             }
         }
 
         Interceptor[] globalInterceptors = GlobalHttp.getInstance().getInterceptors();
         if (globalInterceptors != null) {
-            for (int i = 0; i < globalInterceptors.length; i++) {
-                if (!mOkHttpBuilder.interceptors().contains(globalInterceptors[i])) {
-                    mOkHttpBuilder.addInterceptor(globalInterceptors[i]);
-                }
+            for (Interceptor globalInterceptor : globalInterceptors) {
+                mOkHttpBuilder.addInterceptor(globalInterceptor);
             }
         }
 
