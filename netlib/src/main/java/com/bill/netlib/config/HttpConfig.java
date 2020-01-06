@@ -73,8 +73,8 @@ public class HttpConfig {
             return this;
         }
 
-        public RetrofitClient build() {
-            return RetrofitClient.getInstance().setConfig(new HttpConfig(this));
+        public <K> K createApi(Class<K> cls) {
+            return RetrofitClient.getInstance().setConfig(new HttpConfig(this)).createApi(cls);
         }
 
     }

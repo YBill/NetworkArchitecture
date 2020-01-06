@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         MovieService movieService = HttpUtils
                 .config()
                 .setConverterFactories(ScalarsConverterFactory.create())
-                .build()
                 .createApi(MovieService.class);
 
         movieService.getTopService2(5, 10)
@@ -69,8 +68,17 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(String movie) {
-                        super.onNext(movie);
-                        Log.i("Bill", "onNext: " + movie);
+                        Log.i("Bill", "onNext");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("Bill", "onComplete");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("Bill", "onError:" + e.getMessage());
                     }
                 });
     }

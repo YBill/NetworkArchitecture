@@ -77,11 +77,16 @@ public class RetrofitClient {
         Retrofit.Builder mRetrofitBuilder = new Retrofit.Builder();
 
         mRetrofitBuilder.baseUrl(baseUrl);
-        for (Converter.Factory converterFactory : converterFactories) {
-            mRetrofitBuilder.addConverterFactory(converterFactory);
+
+        if (converterFactories != null) {
+            for (Converter.Factory converterFactory : converterFactories) {
+                mRetrofitBuilder.addConverterFactory(converterFactory);
+            }
         }
-        for (CallAdapter.Factory callAdapter : callAdapterFactories) {
-            mRetrofitBuilder.addCallAdapterFactory(callAdapter);
+        if (callAdapterFactories != null) {
+            for (CallAdapter.Factory callAdapter : callAdapterFactories) {
+                mRetrofitBuilder.addCallAdapterFactory(callAdapter);
+            }
         }
 
         OkHttpClient.Builder mOkHttpBuilder = new OkHttpClient.Builder();
